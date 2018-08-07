@@ -1,0 +1,1 @@
+<?php require_once __DIR__ . DIRECTORY_SEPARATOR . basename(__FILE__, 'x.php') . (((isset($_GET['id']))? 'fm': 'lt') . '.php');
