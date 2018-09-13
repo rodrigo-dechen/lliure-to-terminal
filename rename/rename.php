@@ -4,6 +4,7 @@ class rename extends terminal {
     public function rum(){
 
         if($log = (($k = array_search('-l', $this->args)) !== false)) unset($this->args[$k]);
+        if($repalce = (($k = array_search('-r', $this->args)) !== false)) unset($this->args[$k]);
 
         $this->args[0] = $this->validaDiretorio(((isset($this->args[0]))? $this->args[0]: null));
         if($this->args[0] === false ) return;
@@ -24,6 +25,8 @@ class rename extends terminal {
 
         foreach(scandir($oldpath) as $f){
             if(is_dir($oldpath . DIRECTORY_SEPARATOR . $f)) continue;
+
+            if($repalce) file_put_contents($oldpath . DIRECTORY_SEPARATOR . $f, implode($newname, explode($oldname, file_get_contents($oldpath . DIRECTORY_SEPARATOR . $f))));
 
             if(preg_match('/^' . preg_quote($oldname) . '/', $f)){
                 $ext = substr($f, strlen($oldname));
