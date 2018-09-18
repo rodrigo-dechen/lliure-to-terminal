@@ -4,6 +4,7 @@ class copy extends terminal{
     public function rum(){
 
         if($log = (($k = array_search('-l', $this->args)) !== false)) unset($this->args[$k]);
+        if($repalce = (($k = array_search('-r', $this->args)) !== false)) unset($this->args[$k]);
 
 
         if(!isset($this->args[0])){
@@ -28,10 +29,10 @@ class copy extends terminal{
         $teste = parse_url($newname);
         if(!isset($teste['scheme'])) $newpath = $this->path . DIRECTORY_SEPARATOR . $newname;
 
-        self::copyPath($oldpath, $newpath, $log);
+        self::copyPath($oldpath, $newpath, $log, $repalce);
     }
 
-    private static function copyPath($oldpath, $newpath, $log = false){
+    private static function copyPath($oldpath, $newpath, $log = false, $repalce = false){
         if(!is_dir($oldpath)){
             self::printr('Diretorio origem não encontado: ' . $oldpath);
             return;
@@ -50,6 +51,8 @@ class copy extends terminal{
                 self::copyPath($oldpath . DIRECTORY_SEPARATOR . $f, $newpath . DIRECTORY_SEPARATOR . $f);
 
             }else{
+                if($repalce) file_put_contents($oldpath . DIRECTORY_SEPARATOR . $f, implode($newname, explode($oldname, file_get_contents($oldpath . DIRECTORY_SEPARATOR . $f))));
+
                 if(preg_match('/^' . preg_quote($oldname) . '/', $f)){
                     $ext = substr($f, strlen($oldname));
                     if(!file_exists($newpath . DIRECTORY_SEPARATOR . $f)
