@@ -51,25 +51,26 @@ class copy extends terminal{
                 self::copyPath($oldpath . DIRECTORY_SEPARATOR . $f, $newpath . DIRECTORY_SEPARATOR . $f);
 
             }else{
-                if($repalce) file_put_contents($oldpath . DIRECTORY_SEPARATOR . $f, implode($newname, explode($oldname, file_get_contents($oldpath . DIRECTORY_SEPARATOR . $f))));
-
+                $target = '';
                 if(preg_match('/^' . preg_quote($oldname) . '/', $f)){
                     $ext = substr($f, strlen($oldname));
                     if(!file_exists($newpath . DIRECTORY_SEPARATOR . $f)
                     &&(!file_exists($newpath . DIRECTORY_SEPARATOR . $newname . $ext))){
                         if($log) self::printr("Copiando arquivo > $f\n");
                         copy(
-                            $oldpath . DIRECTORY_SEPARATOR . $f,
-                            $newpath . DIRECTORY_SEPARATOR . $newname . $ext
+                            ($oldpath . DIRECTORY_SEPARATOR . $f),
+                            ($target = $newpath . DIRECTORY_SEPARATOR . $newname . $ext)
                         );
                     }
                 }else{
                     if($log) self::printr("Copiando arquivo > $f\n");
                     copy(
-                        $oldpath . DIRECTORY_SEPARATOR . $f,
-                        $newpath . DIRECTORY_SEPARATOR . $f
+                        ($oldpath . DIRECTORY_SEPARATOR . $f),
+                        ($target = $newpath . DIRECTORY_SEPARATOR . $f)
                     );
                 }
+
+                if($repalce && $target) file_put_contents($target, implode($newname, explode($oldname, file_get_contents($target))));
             }
         }
     }
