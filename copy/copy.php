@@ -16,12 +16,12 @@ class copy extends terminal{
     }
 
     public function rum(){
-        if(array_search('-h', $this->args) !== false) return $this->help();
+        if($this->getExiteAndRemove('-h')) return $this->help();
 
-        if($this->log = (($k = array_search('-l', $this->args)) !== false)) unset($this->args[$k]);
-        if($repalce = (($k = array_search('-r', $this->args)) !== false)) unset($this->args[$k]);
-        if($excludeDirectory = (($k = array_search('-ed', $this->args)) !== false)) unset($this->args[$k]);
-        if($excludeFile = (($k = array_search('-ef', $this->args)) !== false)) unset($this->args[$k]);
+        $this->log = $this->getExiteAndRemove('-l');
+        $repalce = $this->getExiteAndRemove('-r');
+        $excludeDirectory = $this->getExiteAndRemove('-ed');
+        $excludeFile = $this->getExiteAndRemove('-ef');
 
         while(!isset($this->args[0]) || !self::sourceExists($this->absolutePath($this->args[0]))){
             self::printr('Original não encontado' . ((isset($this->args[0]))? ': '. $this->absolutePath($this->args[0]): '') . PHP_EOL);
