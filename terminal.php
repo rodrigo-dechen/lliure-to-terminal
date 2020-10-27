@@ -14,9 +14,8 @@ abstract class terminal{
         $this->args = $argv;
     }
 
-    public static function gets($text = ''){
-        $argv = func_get_args();
-        call_user_func_array('terminal::printr', $argv);
+    public static function gets($format, ...$args){
+        self::printr($format, ...$args);
 
         $input = fopen('php://stdin', 'r');
         $ter = trim(fgets($input));
@@ -25,11 +24,8 @@ abstract class terminal{
         return $ter;
     }
 
-    public static function printr($text){
-        $argv = func_get_args();
-        $text = array_shift($argv);
-        foreach($argv as $v) $text = sprintf($text, $v);
-        echo $text;
+    public static function printr($format, ...$args){
+        echo sprintf($format, ...$args);
     }
 
     abstract public function rum();
