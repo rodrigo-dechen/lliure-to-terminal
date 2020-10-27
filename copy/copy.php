@@ -32,7 +32,11 @@ class copy extends terminal{
             $this->args[1] = $this->gets('Digite a copia > ');
 
         while(self::copyExists($this->absolutePath($this->args[0]), $this->absolutePath($this->args[1]))){
-            if($this->gets('Copia existe. Sobresquevela (S ou N) > ') === 'S') break;
+            question: switch($this->gets('Copia existe. Sobrescreve-la (S ou N) > ')){
+                case 'S': break 2;
+                case 'N': break;
+                default: goto question;
+            }
             $this->args[1] = $this->gets('Digite a copia > ');
         }
 
