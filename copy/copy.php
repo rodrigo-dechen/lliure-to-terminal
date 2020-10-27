@@ -1,7 +1,7 @@
 <?php
 
 class copy extends terminal{
-    private $log = false;
+    private bool $log = false;
 
     public function help(){
         self::printr(implode(PHP_EOL, [
