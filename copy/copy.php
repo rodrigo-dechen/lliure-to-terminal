@@ -67,26 +67,24 @@ class copy extends terminal{
         foreach($oFiles as $k => $file){
             $copy = (($generic)? $nPath . DIRECTORY_SEPARATOR . $nName . substr(basename($file), strlen($oName)): $destiny);
 
-            if(!file_exists($copy)){
-                if(is_file($file)){
-                    if($this->log) self::printr("Copiando arquivo:: {$file} >> {$copy}" . PHP_EOL);
-                    copy($file, $copy);
+            if(file_exists($copy)) continue;
 
-                    if($repalce && !self::isBinary($copy)){
-                        if($this->log) self::printr("Subistituindio:: [{$oName}] >> [{$nName}] :: {$copy}" . PHP_EOL);
-                        file_put_contents($copy, implode($nName, explode($oName, file_get_contents($copy))));
-                    }
+            if(is_dir($file)){
+                $this->copyDiretory($file, $copy, $repalce);
+                continue;}
 
-                }elseif(is_dir($file)){
-                    if($this->log) self::printr("Copiando diretorio:: {$file} >> {$copy}" . PHP_EOL);
-                    $this->copyDiretory($file, $copy, $repalce);
+            if(!is_file($file)) continue;
 
-                }
-            }
+            $this->copyFile($file, $copy);
+
+            if($repalce && !self::isBinary($copy))
+                $this->replaceContent($oName, $nName, $copy);
         }
     }
 
     private function copyDiretory($source, $destiny, $repalce = false){
+
+        if($this->log) self::printr("Copiando diretorio:: {$source} >> {$destiny}" . PHP_EOL);
         if (!is_dir($destiny)) mkdir($destiny, 0755);
 
         $oldname = basename($source);
@@ -99,27 +97,32 @@ class copy extends terminal{
             $file = ($source . DIRECTORY_SEPARATOR . $f);
 
             if (is_dir($file)){
+                $this->copyDiretory($file, ($destiny . DIRECTORY_SEPARATOR . $f));
+                continue;}
+
+            if(!is_file($file)) continue;
+
+            if(preg_match('/^' . preg_quote($oldname) . '/', $f))
+                $copy = ($target = $destiny . DIRECTORY_SEPARATOR . $newname . substr($f, strlen($oldname)));
+            else
                 $copy = ($destiny . DIRECTORY_SEPARATOR . $f);
-                if($this->log) self::printr("Copiando diretorio:: {$file} >> {$copy}" . PHP_EOL);
-                $this->copyDiretory($file, $copy);
 
-            }else{
-                if(preg_match('/^' . preg_quote($oldname) . '/', $f))
-                    $copy = ($target = $destiny . DIRECTORY_SEPARATOR . $newname . substr($f, strlen($oldname)));
-                else
-                    $copy = ($destiny . DIRECTORY_SEPARATOR . $f);
+            if(!file_exists($copy))
+                $this->copyFile($file, $copy);
 
-                if(!file_exists($copy)){
-                    if($this->log) self::printr("Copiando arquivo:: {$file} >> {$copy}" . PHP_EOL);
-                    copy($file, $copy);
-                }
-
-                if($repalce && $target && !self::isBinary($target)) {
-                    if($this->log) self::printr("Subistituindio:: [{$oldname}] >> [{$newname}] :: {$target}" . PHP_EOL);
-                    file_put_contents($target, implode($newname, explode($oldname, file_get_contents($target))));
-                }
-            }
+            if($repalce && $target && !self::isBinary($target))
+                $this->replaceContent($oldname, $newname, $target);
         }
+    }
+
+    private function copyFile(string $source, string $dest){
+        if($this->log) self::printr("Copiando arquivo:: {$source} >> {$dest}" . PHP_EOL);
+        return copy($source, $dest);
+    }
+
+    private function replaceContent($search, $replace, $subject){
+        if($this->log) self::printr("Subistituindio:: [{$search}] >> [{$replace}] :: {$subject}" . PHP_EOL);
+        file_put_contents($subject, implode($replace, explode($search, file_get_contents($subject))));
     }
 
     private function absolutePath ($arg){
@@ -173,6 +176,6 @@ class copy extends terminal{
     }
 
     private static function isBinary($filename){
-        return (substr(finfo_file(finfo_open(FILEINFO_MIME), $filename), 0, 4) === 'text');
+        return (substr(finfo_file(finfo_open(FILEINFO_MIME), $filename), 0, 4) !== 'text');
     }
 }
