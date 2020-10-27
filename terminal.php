@@ -4,7 +4,7 @@ abstract class terminal{
 
     public $path = '';
     public $comand = '';
-    public $args = [];
+    public array $args = [];
 
     public function __construct($argv){
         $this->path = getcwd();
