@@ -29,4 +29,31 @@ abstract class terminal{
     }
 
     abstract public function rum();
+
+    /**
+     * @param string|array $key
+     * @param int $sequence
+     * @return bool|array
+     */
+    protected function getExiteAndRemove($key, int $sequence = 1){
+        if(!is_array($key)) $key = [$key];
+
+        foreach($key as $search){
+            if((($k = array_search($search, $this->args)) !== false)){
+                $return[] = $this->args[$k];
+                unset($this->args[$k]);
+
+                if($sequence <= 1) return true;
+
+                for($i = 1; $i < $sequence; $i++) if(isset($this->args[$k + $i])){
+                    $return[] = $this->args[$k + $i];
+                    unset($this->args[$k]);
+                }
+
+                return $return;
+            }
+        }
+
+        return false;
+    }
 }
