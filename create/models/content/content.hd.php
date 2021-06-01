@@ -1,6 +1,10 @@
 <?php global $aplimo, $cms, $form, $dados; /* @var $this aplimo */
 
 ll::api('navigi');
+ll::api('aplimo');
+ll::opt('usrcontent');
+
+$aplimo = new aplimo();
 
 $aplimo->hdMenuLeft([
     $aplimo->hdMenuTitle('{Content}')

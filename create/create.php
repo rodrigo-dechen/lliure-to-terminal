@@ -5,7 +5,20 @@ class create extends terminal{
     public function rum(){
 
         $model = 'defalt';
+        $listar = false;
+
+        //Ativar help
+        if($help = ((($k = array_search('-h', $this->args)) !== false) || (($k = array_search('-help', $this->args)) !== false))) unset($this->args[$k]);
+        if($help) return $this->help();
+
+        //Ativar lista de modelos
+        if($listar = ($k = array_search('-t', $this->args)) !== false) unset($this->args[$k]);
+        if($listar) return $this->models();
+
+        //Ativar debug
         if($log = (($k = array_search('-l', $this->args)) !== false)) unset($this->args[$k]);
+
+        //Estae o modelo da query
         if(($k = array_search('-m', $this->args)) !== false && isset($this->args[($k + 1)])){
             $model = $this->args[($k + 1)];
             unset($this->args[$k], $this->args[($k + 1)]);
@@ -61,8 +74,6 @@ class create extends terminal{
                 }
             }
         }
-
-
     }
 
     private function definiDir($dir){
@@ -72,4 +83,21 @@ class create extends terminal{
         return $dir;
     }
 
+    private function help(){
+        self::printr(implode("\n", [
+            "ll create 'name' ([-m 'modelo'][ -l])|([ -t])",
+            "\t-l\tAtiva o log de saida (debug).",
+            "\t-t\tLista modelos existententes.",
+            "\t-m \"modelo\"\tSeleciona um modelo.",
+        ]));
+    }
+
+    private function models(){
+        $pathModels = __DIR__ . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR;
+
+        $out = [];
+        foreach(array_diff(scandir($pathModels), ['.', '..']) as $f) $out[] = $f;
+
+        self::printr(implode("\n", $out));
+    }
 }
