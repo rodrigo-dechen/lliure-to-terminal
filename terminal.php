@@ -4,7 +4,7 @@ abstract class terminal{
 
     public $path = '';
     public $comand = '';
-    public $args = [];
+    public array $args = [];
 
     public function __construct($argv){
         $this->path = getcwd();
@@ -14,9 +14,8 @@ abstract class terminal{
         $this->args = $argv;
     }
 
-    public static function gets($text = ''){
-        $argv = func_get_args();
-        call_user_func_array('terminal::printr', $argv);
+    public static function gets($format, ...$args){
+        self::printr($format, ...$args);
 
         $input = fopen('php://stdin', 'r');
         $ter = trim(fgets($input));
@@ -25,12 +24,36 @@ abstract class terminal{
         return $ter;
     }
 
-    public static function printr($text){
-        $argv = func_get_args();
-        $text = array_shift($argv);
-        foreach($argv as $v) $text = sprintf($text, $v);
-        echo $text;
+    public static function printr($format, ...$args){
+        echo sprintf($format, ...$args);
     }
 
     abstract public function rum();
+
+    /**
+     * @param string|array $key
+     * @param int $sequence
+     * @return bool|array
+     */
+    protected function getExiteAndRemove($key, int $sequence = 1){
+        if(!is_array($key)) $key = [$key];
+
+        foreach($key as $search){
+            if((($k = array_search($search, $this->args)) !== false)){
+                $return[] = $this->args[$k];
+                unset($this->args[$k]);
+
+                if($sequence <= 1) return true;
+
+                for($i = 1; $i < $sequence; $i++) if(isset($this->args[$k + $i])){
+                    $return[] = $this->args[$k + $i];
+                    unset($this->args[$k]);
+                }
+
+                return $return;
+            }
+        }
+
+        return false;
+    }
 }
