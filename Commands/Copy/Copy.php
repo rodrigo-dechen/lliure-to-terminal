@@ -1,6 +1,10 @@
 <?php
 
-class copy extends terminal{
+namespace Commands\Copy;
+
+use Terminal;
+
+class Copy extends Terminal{
     private bool $log = false;
 
     public function help(){

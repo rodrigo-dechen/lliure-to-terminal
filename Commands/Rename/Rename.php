@@ -1,6 +1,10 @@
 <?php
 
-class rename extends terminal {
+namespace Commands\Rename;
+
+use Terminal;
+
+class Rename extends Terminal {
     public function rum(){
 
         if($log = (($k = array_search('-l', $this->args)) !== false)) unset($this->args[$k]);

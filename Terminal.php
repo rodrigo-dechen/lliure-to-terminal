@@ -1,6 +1,6 @@
 <?php
 
-abstract class terminal{
+abstract class Terminal{
 
     public $path = '';
     public $comand = '';

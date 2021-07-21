@@ -1,10 +1,14 @@
-<?php require_once __DIR__ . '/autoload.php';
+<?php
 
+require_once __DIR__ . '/vendor/autoload.php';
 
-$argv[1] = ((isset($argv[1]))? $argv[1]: 'help');
-if(class_exists($argv[1])){
+$comand = $argv[1] ?? 'help';
+$comand = ucfirst(strtolower($comand));
+$comand = "Commands\\{$comand}\\{$comand}";
 
-    $comand = new $argv[1]($argv);
-    $comand->rum();
+if(!class_exists($comand)){
+	echo 'comando não implementado';
+}
 
-} else echo 'comando não implementado';
+$comand = new $comand($argv);
+$comand->rum();

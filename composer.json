@@ -1,5 +1,15 @@
 {
     "require": {
-        "lliure/picup": "^2.2"
+        "lliure/picup": "^2.2",
+		"ext-gd": "*",
+		"ext-fileinfo": "*"
+	},
+    "autoload": {
+		"files": [
+			"Terminal.php"
+		],
+        "psr-4": {
+            "Commands\\": "Commands/"
+        }
     }
 }

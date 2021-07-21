@@ -1,14 +1,18 @@
 <?php
 
-class create extends terminal{
+namespace Commands\Create;
+
+use Terminal;
+
+class Create extends Terminal{
 
     public function rum(){
 
         $model = 'defalt';
         $listar = false;
 
-        //Ativar help
-        if($help = ((($k = array_search('-h', $this->args)) !== false) || (($k = array_search('-help', $this->args)) !== false))) unset($this->args[$k]);
+        //Ativar Help
+        if($help = ((($k = array_search('-h', $this->args)) !== false) || (($k = array_search('-Help', $this->args)) !== false))) unset($this->args[$k]);
         if($help) return $this->help();
 
         //Ativar lista de modelos
@@ -85,7 +89,7 @@ class create extends terminal{
 
     private function help(){
         self::printr(implode("\n", [
-            "ll create 'name' ([-m 'modelo'][ -l])|([ -t])",
+            "ll Create 'name' ([-m 'modelo'][ -l])|([ -t])",
             "\t-l\tAtiva o log de saida (debug).",
             "\t-t\tLista modelos existententes.",
             "\t-m \"modelo\"\tSeleciona um modelo.",
