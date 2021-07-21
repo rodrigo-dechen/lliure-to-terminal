@@ -45,10 +45,12 @@ abstract class Terminal{
 
                 if($sequence <= 1) return true;
 
-                for($i = 1; $i < $sequence; $i++) if(isset($this->args[$k + $i])){
-                    $return[] = $this->args[$k + $i];
-                    unset($this->args[$k]);
-                }
+				for($i = 1; $i < $sequence; $i++){
+					if(isset($this->args[$k + $i])){
+						$return[] = $this->args[$k + $i];
+						unset($this->args[$k]);
+					}
+				}
 
                 return $return;
             }

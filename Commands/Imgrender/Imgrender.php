@@ -13,11 +13,36 @@ class Imgrender extends Terminal
 	public function help(){
 		self::printr(implode(PHP_EOL, [
 			"Renderizador de imagens",
+			"\t-to\t\tTipo da saida [png, webp, jpg]",
+			"\t-d [x] [y]\tDimensões maxima da imagem"
 		]));
 	}
 
 	public function rum(){
 		if ($this->getExiteAndRemove('-h')) return $this->help();
+		
+		/** @TODO Construir a opção de executar nos sub diretórios */
+		// recursive files
+		// if ($this->getExiteAndRemove('-rf'));
+
+		/** @TODO Construir a opção de remover imagens originais */
+		// remove original
+		// if ($this->getExiteAndRemove('-ro'));
+
+		// type out
+		$typeOut = $this->getExiteAndRemove('-to', 2);
+		if(!!$typeOut && !isset(self::$type[$typeOut])){
+			self::printr('Tipo da saida não permitido');
+			exit();
+		}
+		if($typeOut === false){
+			$typeOut = 'webp';
+		}
+
+		// Dimensiona
+		$dimensions = (array) $this->getExiteAndRemove('-d', 3);
+		$width = $dimensions[0] ?? 1000;
+		$height = $dimensions[1] ?? 1000;
 		
 		$files = [];
 		foreach(scandir($this->path) as $filename){
@@ -34,7 +59,7 @@ class Imgrender extends Terminal
 		}
 
 		if(!empty($files)){
-			$files = self::cut($files, 1000, 1000, 'p', 'webp');
+			$files = self::cut($files, $width, $height, 'p', $typeOut);
 			
 			foreach($files as ['name' => $file, 'file' => $content]){
 				file_put_contents($file, base64_decode($content));
