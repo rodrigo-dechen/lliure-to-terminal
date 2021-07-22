@@ -40,9 +40,9 @@ class Imgrender extends Terminal
 		}
 
 		// Dimensiona
-		$dimensions = (array) $this->getExiteAndRemove('-d', 3);
-		$width = $dimensions[0] ?? 1000;
-		$height = $dimensions[1] ?? 1000;
+		$dimensions = $this->getExiteAndRemove('-d', 3);
+		$width = $dimensions[1] ?? 1000;
+		$height = $dimensions[2] ?? 1000;
 		
 		$files = [];
 		foreach(scandir($this->path) as $filename){
