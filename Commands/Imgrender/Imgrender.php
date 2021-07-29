@@ -41,8 +41,8 @@ class Imgrender extends Terminal
 
 		// Dimensiona
 		$dimensions = $this->getExiteAndRemove('-d', 3);
-		$width = $dimensions[1] ?? 1000;
-		$height = $dimensions[2] ?? 1000;
+		$width = $dimensions[1] ?? null;
+		$height = $dimensions[2] ?? null;
 		
 		$files = [];
 		foreach(scandir($this->path) as $filename){
@@ -67,7 +67,7 @@ class Imgrender extends Terminal
 		}
 	}
 
-	private static function cut(array $files, int $width, int $height, string $type = 'p', ?string $renderOut = null)
+	private static function cut(array $files, ?int $width = null, ?int $height = null, string $type = 'p', ?string $renderOut = null)
 	{
 		if($renderOut !== null && !isset(self::$type[$renderOut])){
 			$renderOut = false;
@@ -98,11 +98,11 @@ class Imgrender extends Terminal
 				imagesavealpha($oriImg, true);
 			}
 			
-			$widthFinal = $width;
-			$heightFinal = $height;
-			
 			$oriWid = ImagesX($oriImg);
 			$oriHei = ImagesY($oriImg);
+			
+			$widthFinal = $width ?? $oriWid;
+			$heightFinal = $height ?? $oriHei;
 			
 			$heightFinal = ($heightFinal < 1? 1: $heightFinal);
 			
