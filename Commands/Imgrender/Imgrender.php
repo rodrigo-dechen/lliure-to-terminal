@@ -7,8 +7,8 @@ use Terminal;
 class Imgrender extends Terminal
 {
 
-	private bool $log = false;
-	private static $type = ['png' => 'image/webp', 'webp' => 'image/webp', 'jpg' => 'image/jpg'];
+	private bool         $log  = false;
+	private static array $type = ['png' => 'image/webp', 'webp' => 'image/webp', 'jpg' => 'image/jpg'];
 
 	public function help(){
 		self::printr(implode(PHP_EOL, [
@@ -30,12 +30,12 @@ class Imgrender extends Terminal
 		// if ($this->getExiteAndRemove('-ro'));
 
 		// type out
-		$typeOut = $this->getExiteAndRemove('-to', 2);
+		[, $typeOut] = $this->getExiteAndRemove('-to', 2);
 		if(!!$typeOut && !isset(self::$type[$typeOut])){
 			self::printr('Tipo da saida não permitido');
 			exit();
 		}
-		if($typeOut === false){
+		if(empty($typeOut)){
 			$typeOut = 'webp';
 		}
 
