@@ -48,7 +48,7 @@ class Imgrender extends Terminal
 		foreach(scandir($this->path) as $filename){
 			$file = $this->path . DIRECTORY_SEPARATOR . $filename;
 			$mimetype = mime_content_type($file);
-			if($mimetype == 'image/webp' || !(substr($mimetype, 0, 6) == 'image/')){
+			if($mimetype == 'image/' . $typeOut || !(substr($mimetype, 0, 6) == 'image/')){
 				continue;
 			}
 			$files[] = [
