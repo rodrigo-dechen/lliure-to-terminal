@@ -20,7 +20,11 @@ class Imgrender extends Terminal
 
 	public function rum(){
 		if ($this->getExiteAndRemove('-h')) return $this->help();
-		
+
+		/** @TODO Construir uma opção Search para filtrar nomes de arquivos */
+		// Filtrando arquivos
+		// if ($this->getExiteAndRemove('-s'));
+
 		/** @TODO Construir a opção de executar nos sub diretórios */
 		// recursive files
 		// if ($this->getExiteAndRemove('-rf'));
