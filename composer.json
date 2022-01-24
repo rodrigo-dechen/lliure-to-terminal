@@ -2,7 +2,8 @@
     "require": {
         "lliure/picup": "^2.2",
 		"ext-gd": "*",
-		"ext-fileinfo": "*"
+		"ext-fileinfo": "*",
+		"league/climate": "3.*"
 	},
     "autoload": {
 		"files": [
