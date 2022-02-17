@@ -9,7 +9,7 @@ abstract class Terminal{
     public function __construct($argv){
         $this->path = getcwd();
         array_shift($argv);
-        $this->comand = $argv[0];
+        $this->comand = $argv[0] ?? [];
         array_shift($argv);
         $this->args = $argv;
     }
