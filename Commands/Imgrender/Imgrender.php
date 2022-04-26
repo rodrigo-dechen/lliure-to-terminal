@@ -47,6 +47,8 @@ class Imgrender extends Terminal
 		$dimensions = $this->getExiteAndRemove('-d', 3);
 		$width = $dimensions[1] ?? null;
 		$height = $dimensions[2] ?? null;
+		$width = is_numeric($width)? $width : null;
+		$height = is_numeric($height)? $height : null;
 		
 		$files = [];
 		foreach(scandir($this->path) as $filename){
