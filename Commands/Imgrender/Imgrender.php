@@ -14,7 +14,10 @@ class Imgrender extends Terminal
 		self::printr(implode(PHP_EOL, [
 			"Renderizador de imagens",
 			"\t-to\t\tTipo da saida [png, webp, jpg]",
-			"\t-d [x] [y]\tDimensões maxima da imagem"
+			"\t-d [x] [y]\tDimensões maxima da imagem",
+			"\t-do\t\tDeleta as imagens originais",
+			"\t-ai\t\tAuto indexar, coloca um sufixo numerico sequencial",
+			"\t-np [prefix]\tPrefixo no nome"
 		]));
 	}
 
@@ -26,12 +29,17 @@ class Imgrender extends Terminal
 		// if ($this->getExiteAndRemove('-s'));
 
 		/** @TODO Construir a opção de executar nos sub diretórios */
-		// recursive files
+		// Recursive files
 		// if ($this->getExiteAndRemove('-rf'));
 
-		/** @TODO Construir a opção de remover imagens originais */
-		// remove original
-		// if ($this->getExiteAndRemove('-ro'));
+		// Delete originals
+		$deleteOriginals = $this->getExiteAndRemove('-do');
+
+		// Auto index
+		$autoIndex = $this->getExiteAndRemove('-ai');
+
+		// Name Prefix
+		[$namePrefix, $prefix] = $this->getExiteAndRemove('-np', 2);
 
 		// type out
 		[, $typeOut] = $this->getExiteAndRemove('-to', 2);
@@ -49,7 +57,7 @@ class Imgrender extends Terminal
 		$height = $dimensions[2] ?? null;
 		$width = is_numeric($width)? $width : null;
 		$height = is_numeric($height)? $height : null;
-		
+
 		$files = [];
 		foreach(scandir($this->path) as $filename){
 			$file = $this->path . DIRECTORY_SEPARATOR . $filename;
@@ -66,9 +74,35 @@ class Imgrender extends Terminal
 
 		if(!empty($files)){
 			$files = self::cut($files, $width, $height, 'p', $typeOut);
-			
-			foreach($files as ['name' => $file, 'file' => $content]){
+
+			$index = 1;
+			foreach($files as ['from' => $from, 'to' => $file, 'file' => $content]){
+
+				if($autoIndex || $namePrefix){
+					[
+						'dirname'   => $dirname,
+						'extension' => $extension,
+						'filename'  => $filename,
+					] = pathinfo($file);
+
+					if(!!$autoIndex && !$namePrefix){
+						$file = $dirname . DIRECTORY_SEPARATOR . $filename . ('-' . $index++) . '.' . $extension;
+					}
+
+					if(!$autoIndex && !!$namePrefix){
+						$file = $dirname . DIRECTORY_SEPARATOR . $prefix . $filename . '.' . $extension;
+					}
+
+					if(!!$autoIndex && !!$namePrefix){
+						$file = $dirname . DIRECTORY_SEPARATOR . $prefix . ('-' . $index++) . '.' . $extension;
+					}
+				}
+
 				file_put_contents($file, base64_decode($content));
+
+				if($deleteOriginals){
+					@unlink($from);
+				}
 			}
 		}
 	}
@@ -218,12 +252,12 @@ class Imgrender extends Terminal
 			}
 			imagedestroy($newImg);
 			$image_data = base64_encode(ob_get_clean());
-			
+
 			['dirname' => $dirname, 'filename' => $filename] = pathinfo($image['name']);
-			$image['name'] = $dirname . DIRECTORY_SEPARATOR . $filename . '.' . $imgExt;
-			
+
 			$return[$k] = [
-				'name' => $image['name'],
+				'from' => $image['name'],
+				'to'   => ($dirname . DIRECTORY_SEPARATOR . $filename . '.' . $imgExt),
 				'type' => $image['type'],
 				'file' => $image_data,
 			];
